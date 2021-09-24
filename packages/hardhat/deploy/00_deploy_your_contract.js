@@ -3,6 +3,17 @@
 //const { ethers } = require("hardhat");
 let { networkConfig } = require('../helper-hardhat-config')
 
+// helper function to extract SVG out of the generated tokenURI
+function getSVG(tokenURI) {
+  let b64_1 = tokenURI.substring(29)
+  let s_1 = Buffer.from(b64_1, 'base64').toString()
+  let b64_2 = s_1.split(",")[4]
+  let s_2 = Buffer.from(b64_2, 'base64').toString()
+  return s_2
+}
+
+
+
 module.exports = async ({ getNamedAccounts,
   deployments,
   getChainId }) => {
@@ -40,8 +51,11 @@ module.exports = async ({ getNamedAccounts,
   await tx2.wait(1)
   tx3 = await svgNFT.updateMonster(0)
   await tx3.wait(1)
+
+  URI = await svgNFT.tokenURI(0)
+  SVG = getSVG(URI)
   log(`You've made your first NFT!`)
-  log(`You can view the tokenURI here ${await svgNFT.tokenURI(0)}`)
+  log(`You can view the tokenURI here:\n\n${SVG}\n`)
 
 
 
