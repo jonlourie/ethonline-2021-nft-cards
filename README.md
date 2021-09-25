@@ -112,6 +112,11 @@ Once verified, they will then be available to view on Tenderly!
 
 ![nft11](https://user-images.githubusercontent.com/526558/124387132-b04c9e00-dcb3-11eb-95d1-03b8c272e52f.png)
 
+# Git hooks
+
+Configure the repository's `core.hooksPath` to point to `githooks` at the root
+of the repository.
+
 # ⚔️ Side Quests
 ## 🐟 Open Sea
 > Add your contract to OpenSea ( create -> submit NFTs -> "or add an existing contract" )
