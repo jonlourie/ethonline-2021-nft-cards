@@ -26,6 +26,7 @@ import {
   useExchangeEthPrice,
 } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
+import {PATHS, Mint} from './views'
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -590,6 +591,16 @@ function App(props) {
               Debug Contracts
             </Link>
           </Menu.Item>
+          <Menu.Item key={PATHS.mint}>
+            <Link
+              onClick={() => {
+                setRoute(PATHS.mint);
+              }}
+              to={PATHS.mint}
+            >
+              Mint Monster
+            </Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -765,6 +776,10 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
             */}
+          </Route>
+
+          <Route path={PATHS.mint}>
+            <Mint signer={userSigner} provider={mainnetProvider} />
           </Route>
         </Switch>
       </BrowserRouter>
