@@ -9,7 +9,7 @@ import "./MetadataGenerator.sol";
 
 contract SVGNFT is ERC721, Ownable {
     uint256 public tokenCounter;
-    Monster[] internal monsters;
+    mapping(uint256 => Monster) internal monsters;
 
     event CreatedMonster(uint256 indexed tokenId);
 
@@ -29,7 +29,7 @@ contract SVGNFT is ERC721, Ownable {
     }
 
     function create(uint8 color, uint256 chubbiness) public {
-        monsters.push(Monster(color, chubbiness, 0));
+        monsters[tokenCounter] = Monster(color, chubbiness, 0);
         _safeMint(msg.sender, tokenCounter);
         tokenCounter = tokenCounter + 1;
         emit CreatedMonster(tokenCounter);
