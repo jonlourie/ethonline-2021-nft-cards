@@ -1,5 +1,6 @@
 import React, { useState, useReducer } from "react";
-import {Button} from 'antd'
+import { Button, Form, Input } from "antd";
+import styles from "./CardCreator.module.css";
 
 const ATTRIBUTES = {
   HEALTH: "Health",
@@ -17,39 +18,72 @@ const HOMELANDS = {
 };
 
 export default function CardCreator({}) {
-  const [name, setName] = useState();
-  const [story, setStory] = useState();
+  const [name, setName] = useState("");
+  const [story, setStory] = useState("");
   const [homeland, setHomeland] = useState();
   const [attributes, setAttributes] = useState({
     [ATTRIBUTES.HEALTH]: undefined,
     [ATTRIBUTES.ATTACK]: undefined,
     [ATTRIBUTES.SHIELD]: undefined,
   });
-  const [styleState, styleDispatch] = useReducer(styleReducer, null, reducerInit)
+  const [styleState, styleDispatch] = useReducer(styleReducer, null, reducerInit);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const listItems = [
     { label: "Name", value: name },
     { label: "Story", value: story },
     { label: "Homeland", value: homeland },
   ];
-  for (let [ key, value ] of Object.entries(attributes)) {
+  for (let [key, value] of Object.entries(attributes)) {
     listItems.push({ label: key, value });
   }
 
+  const onFinish = values => {
+    setName(values["Name"]);
+    setStory(values["Story"]);
+    setIsSubmitted(true);
+  };
+
+  const onFinishFailed = errorInfo => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
     <div>
-      <Button onClick={() => {
-        setAttributes(randomAttributes());
-      }}>Generate random stats</Button>
-      <ul>
-        {listItems.map(({ label, value }) => {
-          return (
-            <li key={label}>
-              {label}: {value}
-            </li>
-          );
-        })}
+      <Form layout="vertical" name="create-monster" onFinish={onFinish} onFinishFailed={onFinishFailed}>
+        <Form.Item name="Name" label="Name" rules={[{ required: true, message: "Enter monster's name" }]}>
+          <Input value={name} />
+        </Form.Item>
+
+        <Form.Item name="Story" label="Story" rules={[{ required: true, message: "Enter monster's backstory" }]}>
+          <Input.TextArea value={story} rows={4} />
+        </Form.Item>
+
+        <Button type="primary" htmlType="submit">
+          Generate Monster
+        </Button>
+      </Form>
+
+      <ul className={styles.AttributesBlock}>
+        <li>Homeland: {homeland}</li>
+        <li>
+          {ATTRIBUTES.HEALTH}: {attributes[ATTRIBUTES.HEALTH]}
+        </li>
+        <li>
+          {ATTRIBUTES.ATTACK}: {attributes[ATTRIBUTES.ATTACK]}
+        </li>
+        <li>
+          {ATTRIBUTES.SHIELD}: {attributes[ATTRIBUTES.SHIELD]}
+        </li>
       </ul>
+
+      <Button
+        onClick={() => {
+          setAttributes(randomAttributes());
+        }}
+      >
+        Generate random stats
+      </Button>
     </div>
   );
 }
@@ -68,7 +102,7 @@ function randomAttributes() {
     [ATTRIBUTES.HEALTH]: randomHealth(),
     [ATTRIBUTES.SHIELD]: randomShield(),
     [ATTRIBUTES.ATTACK]: randomAttack(),
-  }
+  };
 }
 
 function randomHealth() {
