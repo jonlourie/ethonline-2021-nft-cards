@@ -1,6 +1,7 @@
 import React, { useState, useReducer } from "react";
 import { Button, Form, Input } from "antd";
 import styles from "./CardCreator.module.css";
+import MonsterSVG from "../components/MonsterSVG";
 
 const ATTRIBUTES = {
   HEALTH: "Health",
@@ -55,6 +56,8 @@ export default function CardCreator({}) {
           <Input value={name} />
         </Form.Item>
 
+        <MonsterStyler styleState={styleState} styleDispatch={styleDispatch} />
+
         <Form.Item name="Story" label="Story" rules={[{ required: true, message: "Enter monster's backstory" }]}>
           <Input.TextArea value={story} rows={4} />
         </Form.Item>
@@ -84,6 +87,44 @@ export default function CardCreator({}) {
       >
         Generate random stats
       </Button>
+    </div>
+  );
+}
+
+function MonsterStyler({ styleState, styleDispatch }) {
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  return (
+    <div>
+      <div
+        onClick={() => {
+          setIsEditMode(true);
+        }}
+      >
+        <MonsterSVG teethNum={1} bodyNum={2} eyesNum={3} />
+        <div>click monster to edit style</div>
+      </div>
+
+      <div>
+        {isEditMode ? (
+          <MonsterStyleEditor
+            styleState={styleState}
+            styleDispatch={styleDispatch}
+            onEditFinish={() => {
+              setIsEditMode(false);
+            }}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function MonsterStyleEditor({ styleState, styleDispatch, onEditFinish }) {
+  return (
+    <div>
+      <div>Edit Me!</div>
+      <Button onClick={onEditFinish}>done editing</Button>
     </div>
   );
 }

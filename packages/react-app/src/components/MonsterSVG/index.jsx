@@ -1,3 +1,5 @@
-import { makeSVG } from "./svg";
+import SVG from "./SVG";
 
-export default function MonsterSVG({ teethNum, bodyNum, eyesNum }) {}
+export default function MonsterSVG({ teethNum, bodyNum, eyesNum }) {
+  return <SVG teethNum={teethNum} bodyNum={bodyNum} eyesNum={eyesNum} />;
+}
