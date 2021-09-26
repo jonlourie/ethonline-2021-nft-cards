@@ -1,7 +1,8 @@
 import React, { useState, useReducer } from "react";
 import { Button, Form, Input } from "antd";
 import styles from "./CardCreator.module.css";
-import MonsterSVG from "../components/MonsterSVG";
+import MonsterSVG, { randomBody, randomEyes, randomTeeth } from "../components/MonsterSVG";
+import { randInt } from "../helpers/math";
 
 const ATTRIBUTES = {
   HEALTH: "Health",
@@ -101,7 +102,7 @@ function MonsterStyler({ styleState, styleDispatch }) {
           setIsEditMode(true);
         }}
       >
-        <MonsterSVG teethNum={1} bodyNum={2} eyesNum={3} />
+        <MonsterSVG teethNum={styleState.teethNum} bodyNum={styleState.bodyNum} eyesNum={styleState.eyesNum} />
         <div>click monster to edit style</div>
       </div>
 
@@ -129,15 +130,6 @@ function MonsterStyleEditor({ styleState, styleDispatch, onEditFinish }) {
   );
 }
 
-// Generates a random integer in [min, max)
-function randInt(min, max) {
-  if (max === undefined) {
-    max = min;
-    min = 0;
-  }
-  return Math.floor(Math.random() * (max - min) + min);
-}
-
 function randomAttributes() {
   return {
     [ATTRIBUTES.HEALTH]: randomHealth(),
@@ -159,54 +151,6 @@ function randomShield() {
   return randInt(1, 21) + randInt(1, 21);
 }
 
-const HEAD_CHOICES = ["Horn", "Hat", "Antenna"];
-
-function makeHeadChoice(name, red, green, blue) {
-  if (HEAD_CHOICES.indexOf(name) === -1) {
-    throw `Head choice must be one of ${HEAD_CHOICES.map(choice => `"${choice}"`).join(", ")}`;
-  }
-  for (const color of [red, green, blue]) {
-    if (color < 0 || color > 255 || !Number.isInteger(color)) {
-      throw `All colors must be integers in [0, 255]`;
-    }
-  }
-  return { type: "Head", name: name, color: { red, green, blue } };
-}
-
-function makeRandomHeadChoice() {
-  return makeHeadChoice(HEAD_CHOICES[randInt(HEAD_CHOICES.length)], randInt(255), randInt(255), randInt(255));
-}
-
-const MIN_HEIGHT = 40;
-const MAX_HEIGHT = 200;
-
-function makeHeight(height) {
-  if (height < MIN_HEIGHT || height > MAX_HEIGHT) {
-    throw `height must be in range [${MIN_HEIGHT}, ${MAX_HEIGHT}]`;
-  }
-  return { type: "Height", value: height };
-}
-
-function makeRandomHeight() {
-  return makeHeight(randInt(MIN_HEIGHT, MAX_HEIGHT));
-}
-
-const EYE_CHOICES = ["Single Eye", "Two Eyes", "Laser Eyes"];
-
-function makeEyes(name) {
-  if (EYE_CHOICES.indexOf(name) === -1) {
-    throw `Eye choice must be one of ${EYE_CHOICES.map(choice => `"${choice}"`).join(", ")}`;
-  }
-  return {
-    type: "Eyes",
-    name: name,
-  };
-}
-
-function makeRandomEyes() {
-  return makeEyes(EYE_CHOICES[randInt(EYE_CHOICES.length)]);
-}
-
 function styleReducer(state, action) {
   if (action.type === "randomize") {
     return reducerInit();
@@ -215,12 +159,8 @@ function styleReducer(state, action) {
 
 function reducerInit() {
   return {
-    styles: [makeRandomHeadChoice(), makeRandomEyes(), makeRandomHeight()],
+    teethNum: randomTeeth(),
+    eyesNum: randomEyes(),
+    bodyNum: randomBody(),
   };
 }
-
-/**
- * "Hat": {
- *     type: "enum"
- * }
- */
